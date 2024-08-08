@@ -1,5 +1,6 @@
 import copy
 import json
+from itertools import chain
 from datetime import datetime
 
 from wagtail import VERSION as WAGTAIL_VERSION
@@ -517,6 +518,12 @@ class WordpressItem:
 
         return cleaned
 
+    def cleaned_categories(self):
+        categories = self.node.get('category', [])
+        if len(categories) > 1:
+            return list(chain.from_iterable(categories))
+        return categories
+
     @cached_property
     def cleaned_data(self):
         """Return all processed page model fields"""
@@ -539,4 +546,5 @@ class WordpressItem:
             "wp_normalized_styles": "",
             "wp_raw_content": self.debug_content.get("filter_linebreaks_wp"),
             "wp_post_meta": self.clean_wp_post_meta(),
+            "wp_categories": self.cleaned_categories(),
         }

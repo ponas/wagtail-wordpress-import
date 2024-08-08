@@ -27,6 +27,13 @@ def get_node_value(node):
         if contains_element_node:
             return node.nodeName, node_to_dict(node)
         else:
+            if node.nodeName == "category":
+                return node.nodeName, [
+                    {
+                        **dict(node.attributes.items()),
+                        **{"name": node.childNodes[0].nodeValue},
+                    }
+                ]
             return node.nodeName, coerce_node_value(
                 "".join(child_node.nodeValue for child_node in node.childNodes)
             )
